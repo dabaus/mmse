@@ -30,6 +30,7 @@ public class CreateClaimWindow {
 	private JTextArea description = new JTextArea();
 	private JCheckBox cBox = new JCheckBox("Complex", false);
 	private JCheckBox fBox = new JCheckBox("Send form", true);
+	private JButton submitButton;
 	
 	public CreateClaimWindow(final Vehicle vehicle, final MainWindow window){
 	
@@ -37,7 +38,7 @@ public class CreateClaimWindow {
 		panel = new JPanel(new GridBagLayout());
 		
 		frame.add(panel);
-		JButton submitButton = new JButton("Submit");
+		submitButton = new JButton("Submit");
 		JLabel descriptionLabel = new JLabel("Description:");
 		JScrollPane scrollPane = new JScrollPane(description);
 		JLabel dateLabel = new JLabel("Date: ");
@@ -161,6 +162,13 @@ public class CreateClaimWindow {
 		pt.y -= (frame.getHeight()/2);
 		frame.setLocation(pt);
 		frame.setVisible(true);
-
-	}	
+	}
+	
+	public JTextArea getDescription() {
+		return description;
+	}
+	
+	public JButton getSubmitButton() {
+		return submitButton;
+	}
 }
