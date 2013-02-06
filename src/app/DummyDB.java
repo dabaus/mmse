@@ -52,7 +52,7 @@ public class DummyDB extends DB {
 		
 		customers.put(id, c);
 		
-		Customer c2 = new Customer( ++id, "Toni", "Minkkinen","Hejv√§gen 555", "99999", "Derp", "0100100100");
+		Customer c2 = new Customer( ++id, "Toni", "Minkkinen","Hejv‰gen 555", "99999", "Derp", "0100100100");
 		Vehicle v2 = new Vehicle(c2, "TON1", 200000);
 		vehicles.put("TON1", v2);
 		v2.setInsurance(new Insurance(rnd.randomDate()));
