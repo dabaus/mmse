@@ -37,26 +37,17 @@ public class MainWindow {
 	private JFrame frame;
 	private Hashtable<Integer,Customer>  cust;
 	private JTable table;
-	private JList vList; 
+	private JList vList, claimList;
 	private String[] columnNames = {"ID","First name", "Last name"};
-	private JLabel insuranceStatus;
 	private Customer selectedCustomer;
 	private Vehicle selectedVehicle;
 	private Claim selectedClaim;
-	private JList claimList;
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
-	private JLabel claimDate;
 	private JTextArea descrArea;
-	private JButton claimAcceptButton;
-	private JButton newClaimButton;
-	private JButton claimRejectButton;
-	private JLabel claimType;
-	private JLabel insuranceDate;
-	private JLabel costOfCar;
-	private JLabel customerName;
-	private JLabel customerTelNr;
-	private JLabel customerAddress;
+	private JButton claimAcceptButton, newClaimButton, claimRejectButton;
+	private JLabel claimType, insuranceDate, costOfCar, customerName, customerTelNr;
+	private JLabel claimDate, insuranceStatus, customerAddress;
 	
 	public MainWindow() {
 				
@@ -616,6 +607,14 @@ public class MainWindow {
 	
 	public JTable getTable() {
 		return table;
+	}
+
+	public JList getvList() {
+		return vList;
+	}
+
+	public JButton getNewClaimButton() {
+		return newClaimButton;
 	}
 	
 	

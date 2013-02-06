@@ -30,12 +30,14 @@ public class TestClaimWindow {
 			//main.getIdSearchField().grabFocus();
 			main.getIdSearchField().postActionEvent();
 			assertEquals(main.getIdSearchField().getText(), "1");
-			
 			Thread.sleep(1000);
-			
 			assertEquals(main.getTable().getValueAt(main.getTable().getSelectedRow(), 0), 1);
 			System.out.println("OK");
-			Thread.sleep(2000);
+			Thread.sleep(1000);
+			main.getvList().setSelectedIndex(0);
+			Thread.sleep(1000);
+			main.getNewClaimButton().doClick();
+			Thread.sleep(1000);
 		
 		} catch (InterruptedException e) {
 			e.printStackTrace();
