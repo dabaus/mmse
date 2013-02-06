@@ -28,7 +28,8 @@ public class CreateClaimWindow {
 	private JPanel panel;
 	private Date cal = Calendar.getInstance().getTime();
 	private JTextArea description = new JTextArea();
-	private JCheckBox cBox = new JCheckBox();
+	private JCheckBox cBox = new JCheckBox("Complex", false);
+	private JCheckBox fBox = new JCheckBox("Send form", true);
 	
 	public CreateClaimWindow(final Vehicle vehicle, final MainWindow window){
 	
@@ -47,7 +48,6 @@ public class CreateClaimWindow {
 		JLabel regNo = new JLabel(vehicle.getRegNo());
 		JLabel costLabel = new JLabel("Cost estimate: ");
 		JTextField costField = new JTextField(10);
-		JLabel cLabel = new JLabel("Complex");
 		
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
@@ -110,13 +110,6 @@ public class CreateClaimWindow {
 		c.insets = new Insets(5,10,5,10);	
 		panel.add(descriptionLabel, c);
 		
-		c.gridx = 2;
-		c.gridy = 2;
-		c.weightx = 0;
-		c.anchor = c.EAST;
-		c.insets = new Insets(0, 0, 0, 0);
-		panel.add(cLabel, c);
-		
 		c.gridx = 3;
 		c.gridy = 2;
 		c.weightx = 0;
@@ -152,6 +145,13 @@ public class CreateClaimWindow {
 		c.gridwidth = 4;
 		c.insets = new Insets(5,10,10,10);
 		panel.add(submitButton, c);
+		
+		c.gridx = 3;
+		c.gridy = 6;
+		c.weightx = 0;
+		c.anchor = c.WEST;
+		c.insets = new Insets(0, 0, 0, 0);
+		panel.add(fBox, c);
 		
 		frame.setPreferredSize(new Dimension(400,300));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
