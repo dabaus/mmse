@@ -28,6 +28,7 @@ public class CreateClaimWindow {
 	private JPanel panel;
 	private Date cal = Calendar.getInstance().getTime();
 	private JTextArea description = new JTextArea();
+	private JTextArea infoArea = new JTextArea();
 	private JCheckBox cBox = new JCheckBox("Complex", false);
 	private JCheckBox fBox = new JCheckBox("Send form", true);
 	
@@ -48,9 +49,14 @@ public class CreateClaimWindow {
 		JLabel regNo = new JLabel(vehicle.getRegNo());
 		JLabel costLabel = new JLabel("Cost estimate: ");
 		JTextField costField = new JTextField(10);
+		JLabel infoLabel = new JLabel("Additional form information:");
+		JScrollPane infoPane = new JScrollPane(infoArea);
 		
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
+		
+		infoArea.setLineWrap(true);
+		infoArea.setWrapStyleWord(true);
 		
 		submitButton.addActionListener(
 				new ActionListener() {
@@ -139,10 +145,27 @@ public class CreateClaimWindow {
 		c.weightx = 1;
 		c.insets = new Insets(5,5,5,10);	
 		panel.add(costField, c);
-				
+		
+		
 		c.gridx = 0;
 		c.gridy = 6;
+		c.insets = new Insets(5, 10, 5, 10);
+		panel.add(infoLabel, c);
+		
+		c.gridx = 0;
+		c.gridy = 7;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.fill = c.BOTH;
 		c.gridwidth = 4;
+		c.insets = new Insets(5,10,5,10);	
+		panel.add(infoPane, c);
+				
+		c.gridx = 0;
+		c.gridy = 8;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.fill = c.NONE;
 		c.insets = new Insets(5,10,10,10);
 		panel.add(submitButton, c);
 		
@@ -153,7 +176,7 @@ public class CreateClaimWindow {
 		c.insets = new Insets(0, 0, 0, 0);
 		panel.add(fBox, c);
 		
-		frame.setPreferredSize(new Dimension(400,300));
+		frame.setPreferredSize(new Dimension(450,450));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.pack();
 		Point pt = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
