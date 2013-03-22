@@ -26,7 +26,7 @@ public class DummyDB extends DB {
 
 		Calendar cal = Calendar.getInstance();
 		
-		Claim cl = new Claim(cal.getTime() , "Oois bil pajade", true);
+		Claim cl = new Claim(cal.getTime() , "Oois bil pajade", false);
 		cl.setStatus(Claim.Status.PENDING);
 		in.addClaim(cl);
 		v.setInsurance(in);

@@ -45,11 +45,10 @@ public class MainWindow {
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
 	private JTextArea descrArea;
-	private JButton claimAcceptButton, newClaimButton, claimRejectButton;
+	private JButton claimAcceptButton, newClaimButton, claimRejectButton, printClaimButton;
 	private JLabel claimType, insuranceDate, costOfCar, customerName, customerTelNr;
 	private JLabel claimDate, insuranceStatus, customerAddress;
 	private CreateClaimWindow claimWindow;
-	
 	public MainWindow() {
 				
 		JLabel claimDateLabel = new JLabel("Filed: ");
@@ -93,6 +92,7 @@ public class MainWindow {
 		JScrollPane descrScroll = new JScrollPane(descrArea);
 		claimAcceptButton = new JButton("Accept");
 		claimRejectButton = new JButton("Reject");
+		printClaimButton = new JButton("Print");
 		newClaimButton = new JButton("New claim");
 		claimType = new JLabel();
 		insuranceDate = new JLabel();
@@ -153,6 +153,7 @@ public class MainWindow {
 						selectedClaim.accept();
 						claimList.repaint();
 						claimAcceptButton.setEnabled(false);
+						printClaimButton.setEnabled(true);
 					}
 				}
 		);
@@ -163,6 +164,7 @@ public class MainWindow {
 						selectedClaim.reject();
 						claimList.repaint();
 						claimRejectButton.setEnabled(false);
+						printClaimButton.setEnabled(true);
 					}
 				}
 		);
@@ -207,7 +209,7 @@ public class MainWindow {
 		scrollPane.setPreferredSize(	 new Dimension(380,  200));
 		idSearchField.setPreferredSize(	 new Dimension(80, 25));
 		regSearchField.setPreferredSize( new Dimension(80, 25));
-		claimsPane.setPreferredSize(     new Dimension(300,0));
+		claimsPane.setPreferredSize(     new Dimension(385,0));
 		
 		// Set up topPane
 		GridBagConstraints c = new GridBagConstraints();
@@ -365,20 +367,25 @@ public class MainWindow {
 		c.weightx = 0;
 		c.fill = c.NONE;
 		c.anchor = c.WEST;
-		c.insets = new Insets(5,5,5,5);
+		c.insets = new Insets(4,2,5,2);
 		claimsBottomPane.add(claimAcceptButton, c);
 		
 		c.gridx = 1;
 		c.weightx = 0;
-		c.insets = new Insets(5,5,5,5);
+		c.insets = new Insets(4,2,5,2);
 		claimsBottomPane.add(claimRejectButton, c);
 		
 		c.gridx = 2;
 		c.weightx = 0;
-		c.insets = new Insets(5,5,5,5);
+		c.insets = new Insets(4,2,5,2);
 		claimsBottomPane.add(newClaimButton, c);
 		
 		c.gridx = 3;
+		c.weightx = 0;
+		c.insets = new Insets(4,2,5,2);
+		claimsBottomPane.add(printClaimButton, c);
+		
+		c.gridx = 4;
 		c.fill = c.HORIZONTAL;
 		c.weightx = 1;
 		claimsBottomPane.add(new JPanel(), c);
@@ -488,6 +495,7 @@ public class MainWindow {
 					descrArea.setText(c.getDescription());
 					
 					if(c.getStatus() == Claim.Status.PENDING){
+						printClaimButton.setEnabled(false);
 						if(Session.getInstance().getUser().getRank() == User.Rank.LOW){
 							if(!c.isComplex()) {
 								claimAcceptButton.setEnabled(true);
@@ -501,6 +509,7 @@ public class MainWindow {
 							claimRejectButton.setEnabled(true);
 						}
 					} else {
+						printClaimButton.setEnabled(true);
 						claimAcceptButton.setEnabled(false);
 						claimRejectButton.setEnabled(false);
 					}					
