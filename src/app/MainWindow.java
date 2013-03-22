@@ -48,6 +48,7 @@ public class MainWindow {
 	private JButton claimAcceptButton, newClaimButton, claimRejectButton;
 	private JLabel claimType, insuranceDate, costOfCar, customerName, customerTelNr;
 	private JLabel claimDate, insuranceStatus, customerAddress;
+	private CreateClaimWindow claimWindow;
 	
 	public MainWindow() {
 				
@@ -170,7 +171,7 @@ public class MainWindow {
 		newClaimButton.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						new CreateClaimWindow(selectedVehicle, window);
+						claimWindow = new CreateClaimWindow(selectedVehicle, window);
 					}
 				}
 		);
@@ -617,5 +618,11 @@ public class MainWindow {
 		return newClaimButton;
 	}
 	
+	public CreateClaimWindow getClaimWindow() {
+		return claimWindow;
+	}
 	
+	public JList getClaimList() {
+		return claimList;
+	}
 }

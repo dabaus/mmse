@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import app.CreateClaimWindow;
 import app.MainWindow;
 import app.Session;
 
@@ -16,29 +17,32 @@ public class TestClaimWindow {
 	@Test
 	public void testClaimWindow() {
 		try {
-
+			int time = 500;
 			Session.logIn("jakob", "password"); 
-		
 			MainWindow main = new MainWindow();
-		
-			Thread.sleep(1000);
-			
+			Thread.sleep(time);
 			System.out.println("Skriver in 1");
 			main.getIdSearchField().setText("1");
-			Thread.sleep(1000);
+			Thread.sleep(time);
 			System.out.println("Trycker enter");
 			//main.getIdSearchField().grabFocus();
 			main.getIdSearchField().postActionEvent();
 			assertEquals(main.getIdSearchField().getText(), "1");
-			Thread.sleep(1000);
+			Thread.sleep(time);
 			assertEquals(main.getTable().getValueAt(main.getTable().getSelectedRow(), 0), 1);
 			System.out.println("OK");
-			Thread.sleep(1000);
+			Thread.sleep(time);
 			main.getvList().setSelectedIndex(0);
-			Thread.sleep(1000);
+			Thread.sleep(time);
 			main.getNewClaimButton().doClick();
-			Thread.sleep(1000);
-		
+			Thread.sleep(time);
+			CreateClaimWindow claimWindow = main.getClaimWindow();
+			claimWindow.getDescription().setText("Crashed car into a tree");
+			Thread.sleep(time);
+			claimWindow.getSubmitButton().doClick();
+			Thread.sleep(time);
+			main.getClaimList().setSelectedIndex(0);
+			Thread.sleep(5*time);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
