@@ -24,6 +24,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -105,6 +106,7 @@ public class MainWindow {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
+		printClaimButton.setEnabled(false);
 		claimAcceptButton.setEnabled(false);
 		claimRejectButton.setEnabled(false);
 		newClaimButton.setEnabled(false);
@@ -169,11 +171,18 @@ public class MainWindow {
 				}
 		);
 		
-		final MainWindow window = this; // HACK
 		newClaimButton.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						claimWindow = new CreateClaimWindow(selectedVehicle, window);
+						claimWindow = new CreateClaimWindow(selectedVehicle, MainWindow.this);
+					}
+				}
+		);
+		
+		printClaimButton.addActionListener( 
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JOptionPane.showMessageDialog(null, "Claim printed!");
 					}
 				}
 		);
@@ -482,6 +491,7 @@ public class MainWindow {
 					claimDate.setText("");
 					claimType.setText("");
 					claimAcceptButton.setEnabled(false);
+					printClaimButton.setEnabled(false);
 				} else {
 					c = cl.get(index);
 					selectedClaim = c;
