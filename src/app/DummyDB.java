@@ -52,10 +52,13 @@ public class DummyDB extends DB {
 		
 		customers.put(id, c);
 		
-		Customer c2 = new Customer( ++id, "Toni", "Minkkinen","Hejvägen 555", "99999", "Derp", "0100100100");
+		Customer c2 = new Customer( ++id, "Toni", "Minkkinen","Hejvagen 555", "99999", "Derp", "0100100100");
 		Vehicle v2 = new Vehicle(c2, "TON1", 200000);
 		vehicles.put("TON1", v2);
-		v2.setInsurance(new Insurance(rnd.randomDate()));
+
+		cal.set(2014, 12, 10);
+		v2.setInsurance(new Insurance(cal.getTime()));
+
 		c2.addVehicle(v2);
 		customers.put(id, c2);
 
