@@ -10,17 +10,17 @@ public class Customer {
 	private int id;
 	private List<Vehicle> vehicles = new LinkedList<Vehicle>();
 	private String address;
-	private String postNr;
-	private String ort;
+	private String zipCode;
+	private String city;
 	private String telNr;
 
-	public Customer(int id, String firstName, String lastName, String address, String postNr, String ort, String telNr) {
+	public Customer(int id, String firstName, String lastName, String address, String zipCode, String ort, String telNr) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.id = id;
 		this.address = address;
-		this.postNr = postNr;
-		this.ort = ort;
+		this.zipCode = zipCode;
+		this.city = city;
 		this.telNr = telNr;
 	}
 	
@@ -66,11 +66,11 @@ public class Customer {
 	}
 
 	public String getPostNr() {
-		return postNr;
+		return zipCode;
 	}
 
 	public String getOrt() {
-		return ort;
+		return city;
 	}
 
 	public String getTelNr() {
