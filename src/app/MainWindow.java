@@ -46,10 +46,10 @@ public class MainWindow {
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
 
-	private JLabel insuranceDate, costOfCar, customerName, customerTelNr;
-	private JLabel insuranceStatus, customerAddress;
+	private JLabel insuranceDate, insuranceStatus, costOfCar;
 	
 	private ClaimsPane claimsPane;
+	private CustomerPane customerPane;
 	
 	public MainWindow() {
 
@@ -59,7 +59,6 @@ public class MainWindow {
 		JPanel rootPane = new JPanel(new BorderLayout());
 		JPanel leftPane =  new JPanel(new BorderLayout());
 		JPanel rightPane = new JPanel(new BorderLayout());
-		JPanel customerPane = new JPanel(new GridBagLayout());
 		
 		JPanel bottomPane =  new JPanel(new BorderLayout());
 		CustSelectionListener sl = new CustSelectionListener();
@@ -70,9 +69,6 @@ public class MainWindow {
 		JPanel topPane = new JPanel(new GridBagLayout());	
 		JLabel idSearchLabel = new JLabel("ID:");
 		JLabel regSearchLabel = new JLabel("Reg no:");
-		JLabel customerNameLabel = new JLabel("Name: ");
-		JLabel customerAddressLabel = new JLabel("Address: ");
-		JLabel customerTelLabel = new JLabel("Tel.nr: ");
 
 		
 		frame = new JFrame("Car Insurance Company");
@@ -84,11 +80,9 @@ public class MainWindow {
 		regSearchField = new JTextField();
 		insuranceDate = new JLabel();
 		costOfCar = new JLabel();
-		customerName = new JLabel();
-		customerTelNr = new JLabel();
-		customerAddress = new JLabel();
 		
 		claimsPane =  new ClaimsPane(this);
+		customerPane = new CustomerPane();
 		
 		JScrollPane scrollPane = new JScrollPane(table,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
@@ -150,7 +144,6 @@ public class MainWindow {
 		claimsListPane.setBorder(BorderFactory.createTitledBorder("Claims"));
 		claimsPane.setBorder(BorderFactory.createTitledBorder("Claim Info"));
 		topPane.setBorder(BorderFactory.createTitledBorder("Search"));
-		customerPane.setBorder(BorderFactory.createTitledBorder("Customer info"));
 		
 		// Set dimensions
 		idSearchLabel.setPreferredSize(	 new Dimension(20, 20));
@@ -223,49 +216,7 @@ public class MainWindow {
 		c.insets = new Insets(0,0,0,0);
 		insurancePane.add(new JPanel(), c); // PADDING
 
-		// Customer info pane
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerNameLabel, c);
 		
-		c.gridx = 1;
-		c.gridy = 0;
-		c.weightx = 1;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerName, c);
-		
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 0;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerAddressLabel, c);
-		
-		c.gridx = 1;
-		c.gridy = 1;
-		c.weightx = 1;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerAddress, c);
-		
-		c.gridx = 0;
-		c.gridy = 2;
-		c.weightx = 0;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerTelLabel, c);
-		
-		c.gridx = 1;
-		c.gridy = 2;
-		c.weightx = 1;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 5, 5);
-		customerPane.add(customerTelNr, c);
 		
 		
 		
@@ -393,7 +344,6 @@ public class MainWindow {
 		}
 	}
 	
-	
 	private class CustSelectionListener implements ListSelectionListener {
 
 		@Override
@@ -416,11 +366,11 @@ public class MainWindow {
 					vList.setModel(listModel);
 					claimList.setModel(new DefaultListModel());
 					
-					customerName.setText(selectedCustomer.getFirstName() + " " + selectedCustomer.getLastName());
-					customerAddress.setText(selectedCustomer.getAddress() + " " 
+					customerPane.setCustomerName(selectedCustomer.getFirstName() + " " + selectedCustomer.getLastName());
+					customerPane.setCustomerAddress(selectedCustomer.getAddress() + " " 
 											+ selectedCustomer.getPostNr() + " " 
 											+ selectedCustomer.getCity());
-					customerTelNr.setText(selectedCustomer.getTelNr());
+					customerPane.setCustomerTelNo(selectedCustomer.getTelNr());
 					
 //					vList.setSelectedIndex(0);
 //					vList.grabFocus();
