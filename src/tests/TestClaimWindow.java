@@ -34,9 +34,9 @@ public class TestClaimWindow {
 			Thread.sleep(time);
 			main.getvList().setSelectedIndex(0);
 			Thread.sleep(time);
-			main.getNewClaimButton().doClick();
+			main.getClaimsPane().getNewClaimButton().doClick();
 			Thread.sleep(time);
-			CreateClaimWindow claimWindow = main.getClaimWindow();
+			CreateClaimWindow claimWindow = main.getClaimsPane().getClaimWindow();
 			claimWindow.getDescription().setText("Crashed car into a tree");
 			Thread.sleep(time);
 			claimWindow.getSubmitButton().doClick();

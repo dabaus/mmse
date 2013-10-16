@@ -14,7 +14,7 @@ public class Customer {
 	private String city;
 	private String telNr;
 
-	public Customer(int id, String firstName, String lastName, String address, String zipCode, String ort, String telNr) {
+	public Customer(int id, String firstName, String lastName, String address, String zipCode, String city, String telNr) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.id = id;
@@ -69,7 +69,7 @@ public class Customer {
 		return zipCode;
 	}
 
-	public String getOrt() {
+	public String getCity() {
 		return city;
 	}
 

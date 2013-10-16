@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -42,18 +43,16 @@ public class MainWindow {
 	private String[] columnNames = {"ID","First name", "Last name"};
 	private Customer selectedCustomer;
 	private Vehicle selectedVehicle;
-	private Claim selectedClaim;
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
-	private JTextArea descrArea;
-	private JButton claimAcceptButton, newClaimButton, claimRejectButton, printClaimButton;
-	private JLabel claimType, insuranceDate, costOfCar, customerName, customerTelNr;
-	private JLabel claimDate, insuranceStatus, customerAddress;
-	private CreateClaimWindow claimWindow;
+
+	private JLabel insuranceDate, costOfCar, customerName, customerTelNr;
+	private JLabel insuranceStatus, customerAddress;
+	
+	private ClaimsPane claimsPane;
+	
 	public MainWindow() {
-				
-		JLabel claimDateLabel = new JLabel("Filed: ");
-		JLabel claimTypeLabel = new JLabel("Type:");
+
 		JLabel insStatusLabel = new JLabel("Status:");
 		JLabel insDateLabel = new JLabel("Valid to:");
 		JLabel costOfCarLabel = new JLabel("Cost:");
@@ -61,10 +60,7 @@ public class MainWindow {
 		JPanel leftPane =  new JPanel(new BorderLayout());
 		JPanel rightPane = new JPanel(new BorderLayout());
 		JPanel customerPane = new JPanel(new GridBagLayout());
-		JPanel claimsPane =  new JPanel(new BorderLayout());
-		JPanel claimsTopPane =  new JPanel(new GridBagLayout());
-		JPanel claimsCenterPane = new JPanel(new GridBagLayout());
-		JPanel claimsBottomPane = new JPanel(new GridBagLayout());
+		
 		JPanel bottomPane =  new JPanel(new BorderLayout());
 		CustSelectionListener sl = new CustSelectionListener();
 		JPanel vListPane = new JPanel(new BorderLayout());
@@ -74,43 +70,29 @@ public class MainWindow {
 		JPanel topPane = new JPanel(new GridBagLayout());	
 		JLabel idSearchLabel = new JLabel("ID:");
 		JLabel regSearchLabel = new JLabel("Reg no:");
-		ClaimSelectionListener cl = new ClaimSelectionListener();
-		JLabel descrLabel = new JLabel("Description:");
 		JLabel customerNameLabel = new JLabel("Name: ");
 		JLabel customerAddressLabel = new JLabel("Address: ");
 		JLabel customerTelLabel = new JLabel("Tel.nr: ");
 
 		
 		frame = new JFrame("Car Insurance Company");
-		claimDate = new JLabel();
 		table = new JTable();
 		vList = new JList();
 		claimList = new JList();
 		insuranceStatus = new JLabel();
 		idSearchField = new JFormattedTextField(NumberFormat.getInstance());
 		regSearchField = new JTextField();
-		descrArea = new JTextArea("");
-		JScrollPane descrScroll = new JScrollPane(descrArea);
-		claimAcceptButton = new JButton("Accept");
-		claimRejectButton = new JButton("Reject");
-		printClaimButton = new JButton("Print");
-		newClaimButton = new JButton("New claim");
-		claimType = new JLabel();
 		insuranceDate = new JLabel();
 		costOfCar = new JLabel();
 		customerName = new JLabel();
 		customerTelNr = new JLabel();
 		customerAddress = new JLabel();
 		
+		claimsPane =  new ClaimsPane(this);
+		
 		JScrollPane scrollPane = new JScrollPane(table,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		printClaimButton.setEnabled(false);
-		claimAcceptButton.setEnabled(false);
-		claimRejectButton.setEnabled(false);
-		newClaimButton.setEnabled(false);
-		descrArea.setEditable(false);
 
 		// Actions
 		idSearchField.addActionListener( 
@@ -148,47 +130,8 @@ public class MainWindow {
 					}
 				}
 			);
- 
-		claimAcceptButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						selectedClaim.accept();
-						claimList.repaint();
-						claimAcceptButton.setEnabled(false);
-						printClaimButton.setEnabled(true);
-					}
-				}
-		);
-		
-		claimRejectButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						selectedClaim.reject();
-						claimList.repaint();
-						claimRejectButton.setEnabled(false);
-						printClaimButton.setEnabled(true);
-					}
-				}
-		);
-		
-		newClaimButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						claimWindow = new CreateClaimWindow(selectedVehicle, MainWindow.this);
-					}
-				}
-		);
-		
-		printClaimButton.addActionListener( 
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane.showMessageDialog(null, "Claim printed!");
-					}
-				}
-		);
 		
 		vList.addListSelectionListener(vl);
-		claimList.addListSelectionListener(cl);
 		
 		// Load customers
 		DB db = DB.getInstance();
@@ -325,84 +268,7 @@ public class MainWindow {
 		customerPane.add(customerTelNr, c);
 		
 		
-		// claims top pane
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.weightx = 0;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0,10,5,0);
-		claimsTopPane.add(claimDateLabel, c);	
-		c.gridx = 1;
-		claimsTopPane.add(claimDate, c);
-		c.gridx = 2;
-		c.fill = c.HORIZONTAL;
-		c.weightx = 1;
-		claimsTopPane.add(new JPanel(), c); // PADDING
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 0;
-		c.fill = c.NONE;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0,10,5,0);
-		claimsTopPane.add(claimTypeLabel, c);
-		c.gridx = 1;
-		claimsTopPane.add(claimType, c);
-			
-		// claims center pane
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.fill = c.NONE;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 0, 0);
-		claimsCenterPane.add(descrLabel, c);
-		c.gridx = 1;
-		c.weightx = 1;
-		c.fill = c.HORIZONTAL;
-		claimsCenterPane.add(new JPanel() , c);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 2;
-		c.weighty = 1;
-		c.fill = c.BOTH;
-		c.insets = new Insets(0, 10, 10, 10);
-		claimsCenterPane.add(descrScroll, c);
-		//Reset
-		c.gridwidth = 1;
-		c.weighty = 0;
 		
-		// claims bottom pane
-		c.gridx = 0;
-		c.weightx = 0;
-		c.fill = c.NONE;
-		c.anchor = c.WEST;
-		c.insets = new Insets(4,2,5,2);
-		claimsBottomPane.add(claimAcceptButton, c);
-		
-		c.gridx = 1;
-		c.weightx = 0;
-		c.insets = new Insets(4,2,5,2);
-		claimsBottomPane.add(claimRejectButton, c);
-		
-		c.gridx = 2;
-		c.weightx = 0;
-		c.insets = new Insets(4,2,5,2);
-		claimsBottomPane.add(newClaimButton, c);
-		
-		c.gridx = 3;
-		c.weightx = 0;
-		c.insets = new Insets(4,2,5,2);
-		claimsBottomPane.add(printClaimButton, c);
-		
-		c.gridx = 4;
-		c.fill = c.HORIZONTAL;
-		c.weightx = 1;
-		claimsBottomPane.add(new JPanel(), c);
-		
-		// Organize panels
-		claimsPane.add(claimsTopPane, BorderLayout.NORTH);
-		claimsPane.add(claimsCenterPane, BorderLayout.CENTER);
-		claimsPane.add(claimsBottomPane, BorderLayout.SOUTH);
 		vListPane.add(vList, BorderLayout.CENTER);
 		claimsListPane.add(claimList, BorderLayout.CENTER);
 		bottomPane.add(vListPane, BorderLayout.WEST);
@@ -476,57 +342,6 @@ public class MainWindow {
 			return (col == 3);
 		}
 	}
-	
-
-	private class ClaimSelectionListener implements ListSelectionListener {
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			int index;
-			List<Claim> cl = selectedVehicle.getInsurance().getClaims();
-			Claim c;
-			Date d;
-			if(!e.getValueIsAdjusting()) {
-				index = claimList.getSelectedIndex();
-				if(index == -1) {
-					claimDate.setText("");
-					claimType.setText("");
-					claimAcceptButton.setEnabled(false);
-					printClaimButton.setEnabled(false);
-				} else {
-					c = cl.get(index);
-					selectedClaim = c;
-					d = c.getFileDate();
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(d);
-					Date date = cal.getTime();
-					
-					claimDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(date));
-					claimType.setText((c.isComplex()) ? "Complex": "Simple");
-					descrArea.setText(c.getDescription());
-					
-					if(c.getStatus() == Claim.Status.PENDING){
-						printClaimButton.setEnabled(false);
-						if(Session.getInstance().getUser().getRank() == User.Rank.LOW){
-							if(!c.isComplex()) {
-								claimAcceptButton.setEnabled(true);
-								claimRejectButton.setEnabled(true);
-							} else {
-								claimAcceptButton.setEnabled(false);
-								claimRejectButton.setEnabled(false);
-							}
-						} else {
-							claimAcceptButton.setEnabled(true);
-							claimRejectButton.setEnabled(true);
-						}
-					} else {
-						printClaimButton.setEnabled(true);
-						claimAcceptButton.setEnabled(false);
-						claimRejectButton.setEnabled(false);
-					}					
-				}
-			}
-		}
-	}
 
 	private class VehicleSelectionListener implements ListSelectionListener {
 		@Override
@@ -547,7 +362,7 @@ public class MainWindow {
 			insuranceStatus.setText("");
 			insuranceDate.setText("");
 			costOfCar.setText("");
-			newClaimButton.setEnabled(false);
+			claimsPane.setNewClaimButtonEnabled(false);
 		} else {
 			vl = selectedCustomer.getVehicles();
 			v = vl.get(index);
@@ -557,10 +372,10 @@ public class MainWindow {
 			if(in != null) {
 				if (in.isActive()) {
 					insuranceStatus.setText("Active");
-					newClaimButton.setEnabled(true);
+					claimsPane.setNewClaimButtonEnabled(true);
 				} else {
 					insuranceStatus.setText("Inactive");
-					newClaimButton.setEnabled(false);
+					claimsPane.setNewClaimButtonEnabled(false);
 				}
 				insuranceDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(in.getValidTo()));
 			}				
@@ -604,7 +419,7 @@ public class MainWindow {
 					customerName.setText(selectedCustomer.getFirstName() + " " + selectedCustomer.getLastName());
 					customerAddress.setText(selectedCustomer.getAddress() + " " 
 											+ selectedCustomer.getPostNr() + " " 
-											+ selectedCustomer.getOrt());
+											+ selectedCustomer.getCity());
 					customerTelNr.setText(selectedCustomer.getTelNr());
 					
 //					vList.setSelectedIndex(0);
@@ -632,16 +447,16 @@ public class MainWindow {
 	public JList getvList() {
 		return vList;
 	}
-
-	public JButton getNewClaimButton() {
-		return newClaimButton;
-	}
 	
-	public CreateClaimWindow getClaimWindow() {
-		return claimWindow;
+	public ClaimsPane getClaimsPane() {
+		return claimsPane;
 	}
 	
 	public JList getClaimList() {
 		return claimList;
+	}
+	
+	public Vehicle getSelectedVehicle() {
+		return selectedVehicle;
 	}
 }

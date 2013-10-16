@@ -63,6 +63,7 @@ public class CreateClaimWindow {
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Claim c = new Claim(cal, description.getText(), cBox.isSelected());
+						c.setStatus(Claim.Status.PENDING);
 						vehicle.getInsurance().addClaim(c);
 						window.vehicleSelection();
 						frame.dispose();

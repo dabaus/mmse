@@ -32,7 +32,7 @@ public class Claim implements Comparable<Claim>{
 		this.fileDate = fileDate;
 		this.setDescription(description);
 		this.complex = complex;
-		this.status = Claim.Status.PENDING;
+		this.status = null; //Claim.Status.PENDING;
 	}
 	
 	public boolean isComplex(){

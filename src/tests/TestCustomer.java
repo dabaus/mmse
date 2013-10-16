@@ -29,7 +29,7 @@ public class TestCustomer {
 		assertSame(v, c.getVehicles().get(0));
 		assertEquals("Adress 123", c.getAddress());
 		assertEquals("12345", c.getPostNr());
-		assertEquals("Ort", c.getOrt());
+		assertEquals("Ort", c.getCity());
 		assertEquals("0701234567", c.getTelNr());
 	}
 
