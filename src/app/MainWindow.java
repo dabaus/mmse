@@ -45,49 +45,158 @@ public class MainWindow {
 	private Vehicle selectedVehicle;
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
-
-	private JLabel insuranceDate, insuranceStatus, costOfCar;
 	
 	private ClaimsPane claimsPane;
 	private CustomerPane customerPane;
+	private InsurancePane insurancePane;
+	private JPanel rootPane, leftPane, rightPane, bottomPane, topPane;
+	private JLabel  idSearchLabel, regSearchLabel;
+	private JPanel vListPane, claimsListPane;
+	private JScrollPane scrollPane;
 	
 	public MainWindow() {
-
-		JLabel insStatusLabel = new JLabel("Status:");
-		JLabel insDateLabel = new JLabel("Valid to:");
-		JLabel costOfCarLabel = new JLabel("Cost:");
-		JPanel rootPane = new JPanel(new BorderLayout());
-		JPanel leftPane =  new JPanel(new BorderLayout());
-		JPanel rightPane = new JPanel(new BorderLayout());
 		
-		JPanel bottomPane =  new JPanel(new BorderLayout());
+		rootPane = new JPanel(new BorderLayout());
+		leftPane =  new JPanel(new BorderLayout());
+		rightPane = new JPanel(new BorderLayout());
+		bottomPane =  new JPanel(new BorderLayout());
+		topPane = new JPanel(new GridBagLayout());
+		
 		CustSelectionListener sl = new CustSelectionListener();
-		JPanel vListPane = new JPanel(new BorderLayout());
-		JPanel insurancePane = new JPanel(new GridBagLayout());
-		JPanel claimsListPane = new JPanel(new BorderLayout());
-		VehicleSelectionListener vl = new VehicleSelectionListener();
-		JPanel topPane = new JPanel(new GridBagLayout());	
-		JLabel idSearchLabel = new JLabel("ID:");
-		JLabel regSearchLabel = new JLabel("Reg no:");
+		vListPane = new JPanel(new BorderLayout());
+		claimsListPane = new JPanel(new BorderLayout());
+		VehicleSelectionListener vl = new VehicleSelectionListener();	
+		
+		idSearchLabel = new JLabel("ID:");
+		regSearchLabel = new JLabel("Reg no:");
 
 		
 		frame = new JFrame("Car Insurance Company");
 		table = new JTable();
 		vList = new JList();
 		claimList = new JList();
-		insuranceStatus = new JLabel();
 		idSearchField = new JFormattedTextField(NumberFormat.getInstance());
 		regSearchField = new JTextField();
-		insuranceDate = new JLabel();
-		costOfCar = new JLabel();
 		
 		claimsPane =  new ClaimsPane(this);
 		customerPane = new CustomerPane();
+		insurancePane = new InsurancePane();
 		
-		JScrollPane scrollPane = new JScrollPane(table,
+		scrollPane = new JScrollPane(table,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
+		addActionListeners();
+		
+		vList.addListSelectionListener(vl);
+		
+		// Load customers
+		DB db = DB.getInstance();
+		cust = db.loadCustomers();
+
+		// Setup table
+		table.setAutoCreateRowSorter(true);
+		table.setModel(new CustTableModel());
+		table.setRowSelectionAllowed(true);
+		table.getSelectionModel().addListSelectionListener(sl);
+		table.getColumnModel().getSelectionModel().addListSelectionListener(sl);
+
+		// Set border
+		vListPane.setBorder(BorderFactory.createTitledBorder("Vehicles"));
+		insurancePane.setBorder(BorderFactory.createTitledBorder("Insurance"));
+		claimsListPane.setBorder(BorderFactory.createTitledBorder("Claims"));
+		claimsPane.setBorder(BorderFactory.createTitledBorder("Claim Info"));
+		topPane.setBorder(BorderFactory.createTitledBorder("Search"));
+		
+		// Set dimensions
+		idSearchLabel.setPreferredSize(	 new Dimension(20, 20));
+		bottomPane.setPreferredSize(	 new Dimension(0,  200));
+		vListPane.setPreferredSize(		 new Dimension(100,0));
+		insurancePane.setPreferredSize(	 new Dimension(180,0));
+		claimsListPane.setPreferredSize( new Dimension(100,0));
+		scrollPane.setPreferredSize(	 new Dimension(380,  200));
+		idSearchField.setPreferredSize(	 new Dimension(80, 25));
+		regSearchField.setPreferredSize( new Dimension(80, 25));
+		claimsPane.setPreferredSize(     new Dimension(385,0));
+		
+		setupTopPane();
+		setupBottomPane();
+		setupRightPane();
+		setupLeftPane();
+		
+		vListPane.add(vList, BorderLayout.CENTER);
+		claimsListPane.add(claimList, BorderLayout.CENTER);
+		
+		// add panels
+		rootPane.add(leftPane, BorderLayout.WEST);
+		rootPane.add(rightPane, BorderLayout.CENTER);
+
+		// Prepare for display
+		frame.addWindowListener(new WindowListener() {
+			public void windowClosing(WindowEvent e) {
+				Session s = Session.getInstance();
+				s.logOut();
+			}
+			public void windowOpened(WindowEvent e) {}
+			public void windowClosed(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowActivated(WindowEvent e) {}
+			public void windowDeactivated(WindowEvent e) {}
+		});
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(rootPane);
+		frame.pack();
+		Point pt = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		pt.x -= (frame.getWidth()/2);
+		pt.y -= (frame.getHeight()/2);
+		frame.setLocation(pt);
+		frame.setVisible(true);
+	}
+
+	private void setupTopPane() {
+		// Set up topPane
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0;
+		c.insets =  new Insets(0, 10, 10, 0);
+		topPane.add(idSearchLabel, c);
+		c.gridx = 1;
+		c.insets =  new Insets(0, 0, 10, 0);
+		topPane.add(idSearchField, c);
+		c.gridx = 2;
+		c.insets =  new Insets(0, 10, 10, 0);
+		topPane.add(regSearchLabel, c);
+		c.gridx = 3;
+		c.insets =  new Insets(0, 0, 10, 0);
+		topPane.add(regSearchField, c);
+		c.gridx = 4;
+		c.insets =  new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.fill = c.HORIZONTAL;
+		topPane.add(new JPanel(), c); // PADDING
+	}
+	
+	private void setupRightPane() {
+		rightPane.add(claimsPane, BorderLayout.CENTER);
+		rightPane.add(customerPane, BorderLayout.NORTH);
+	}
+	
+	private void setupLeftPane() {
+		leftPane.add(topPane, BorderLayout.NORTH);
+		leftPane.add(scrollPane,  BorderLayout.CENTER);
+		leftPane.add(bottomPane, BorderLayout.SOUTH);
+	}
+	
+	private void setupBottomPane() {
+		bottomPane.add(vListPane, BorderLayout.WEST);
+		bottomPane.add(insurancePane, BorderLayout.CENTER);
+		bottomPane.add(claimsListPane, BorderLayout.EAST);
+	}
+	
+	private void addActionListeners() {
 		// Actions
 		idSearchField.addActionListener( 
 			new ActionListener() {			
@@ -124,143 +233,9 @@ public class MainWindow {
 					}
 				}
 			);
-		
-		vList.addListSelectionListener(vl);
-		
-		// Load customers
-		DB db = DB.getInstance();
-		cust = db.loadCustomers();
-
-		// Setup table
-		table.setAutoCreateRowSorter(true);
-		table.setModel(new CustTableModel());
-		table.setRowSelectionAllowed(true);
-		table.getSelectionModel().addListSelectionListener(sl);
-		table.getColumnModel().getSelectionModel().addListSelectionListener(sl);
-
-		// Set border
-		vListPane.setBorder(BorderFactory.createTitledBorder("Vehicles"));
-		insurancePane.setBorder(BorderFactory.createTitledBorder("Insurance"));
-		claimsListPane.setBorder(BorderFactory.createTitledBorder("Claims"));
-		claimsPane.setBorder(BorderFactory.createTitledBorder("Claim Info"));
-		topPane.setBorder(BorderFactory.createTitledBorder("Search"));
-		
-		// Set dimensions
-		idSearchLabel.setPreferredSize(	 new Dimension(20, 20));
-		bottomPane.setPreferredSize(	 new Dimension(0,  200));
-		vListPane.setPreferredSize(		 new Dimension(100,0));
-		insurancePane.setPreferredSize(	 new Dimension(180,0));
-		claimsListPane.setPreferredSize( new Dimension(100,0));
-		scrollPane.setPreferredSize(	 new Dimension(380,  200));
-		idSearchField.setPreferredSize(	 new Dimension(80, 25));
-		regSearchField.setPreferredSize( new Dimension(80, 25));
-		claimsPane.setPreferredSize(     new Dimension(385,0));
-		
-		// Set up topPane
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.insets =  new Insets(0, 10, 10, 0);
-		topPane.add(idSearchLabel, c);
-		c.gridx = 1;
-		c.insets =  new Insets(0, 0, 10, 0);
-		topPane.add(idSearchField, c);
-		c.gridx = 2;
-		c.insets =  new Insets(0, 10, 10, 0);
-		topPane.add(regSearchLabel, c);
-		c.gridx = 3;
-		c.insets =  new Insets(0, 0, 10, 0);
-		topPane.add(regSearchField, c);
-		c.gridx = 4;
-		c.insets =  new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.fill = c.HORIZONTAL;
-		topPane.add(new JPanel(), c); // PADDING
-
-		
-		// insurance pane
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 0;
-		c.anchor = c.WEST;
-		c.insets = new Insets(0, 10, 0, 5);
-		insurancePane.add(insStatusLabel, c);
-		c.gridx = 1;
-		c.gridy = 0;
-		c.insets = new Insets(0, 5, 0, 10);
-		insurancePane.add(insuranceStatus, c);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.insets = new Insets(5, 10, 0, 5);
-		insurancePane.add(insDateLabel, c);
-		c.gridx = 1;
-		c.gridy = 1;
-		c.insets = new Insets(5, 5, 0, 10);
-		insurancePane.add(insuranceDate, c);
-		c.gridx = 0;
-		c.gridy = 2;
-		c.insets = new Insets(5, 10, 0, 5);
-		insurancePane.add(costOfCarLabel, c);
-		c.gridx = 1;
-		c.gridy = 2;
-		c.insets = new Insets(5, 5, 0, 10);
-		insurancePane.add(costOfCar, c);
-		c.gridx = 0;
-		c.gridy = 3;
-		c.gridwidth = 2;
-		c.fill = c.BOTH;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(0,0,0,0);
-		insurancePane.add(new JPanel(), c); // PADDING
-
-		
-		
-		
-		
-		vListPane.add(vList, BorderLayout.CENTER);
-		claimsListPane.add(claimList, BorderLayout.CENTER);
-		bottomPane.add(vListPane, BorderLayout.WEST);
-		bottomPane.add(insurancePane, BorderLayout.CENTER);
-		bottomPane.add(claimsListPane, BorderLayout.EAST);
-		
-		leftPane.add(topPane, BorderLayout.NORTH);
-		leftPane.add(scrollPane,  BorderLayout.CENTER);
-		leftPane.add(bottomPane, BorderLayout.SOUTH);
-
-		rightPane.add(claimsPane, BorderLayout.CENTER);
-		rightPane.add(customerPane, BorderLayout.NORTH);
-		
-		// add panels
-		rootPane.add(leftPane, BorderLayout.WEST);
-		rootPane.add(rightPane, BorderLayout.CENTER);
-
-		// Prepare for display
-		frame.addWindowListener(new WindowListener() {
-			public void windowClosing(WindowEvent e) {
-				Session s = Session.getInstance();
-				s.logOut();
-			}
-			public void windowOpened(WindowEvent e) {}
-			public void windowClosed(WindowEvent e) {}
-			public void windowIconified(WindowEvent e) {}
-			public void windowDeiconified(WindowEvent e) {}
-			public void windowActivated(WindowEvent e) {}
-			public void windowDeactivated(WindowEvent e) {}
-		});
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(rootPane);
-		frame.pack();
-		Point pt = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		pt.x -= (frame.getWidth()/2);
-		pt.y -= (frame.getHeight()/2);
-		frame.setLocation(pt);
-		frame.setVisible(true);
 	}
-
+	
+	
 	private class CustTableModel extends AbstractTableModel {
 
 		public int getColumnCount() {
@@ -310,25 +285,25 @@ public class MainWindow {
 		Insurance in;
 		index = vList.getSelectedIndex();
 		if(index == -1) {
-			insuranceStatus.setText("");
-			insuranceDate.setText("");
-			costOfCar.setText("");
+			insurancePane.setInsuranceStatus("");
+			insurancePane.setInsuranceDate("");
+			insurancePane.setCostOfCar("");
 			claimsPane.setNewClaimButtonEnabled(false);
 		} else {
 			vl = selectedCustomer.getVehicles();
 			v = vl.get(index);
 			selectedVehicle = v;
-			costOfCar.setText(Integer.toString(v.getPrice()));
+			insurancePane.setCostOfCar(Integer.toString(v.getPrice()));
 			in = v.getInsurance();
 			if(in != null) {
 				if (in.isActive()) {
-					insuranceStatus.setText("Active");
+					insurancePane.setInsuranceStatus("Active");
 					claimsPane.setNewClaimButtonEnabled(true);
 				} else {
-					insuranceStatus.setText("Inactive");
+					insurancePane.setInsuranceStatus("Inactive");
 					claimsPane.setNewClaimButtonEnabled(false);
 				}
-				insuranceDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(in.getValidTo()));
+				insurancePane.setInsuranceDate(new SimpleDateFormat("yyyy-MM-dd").format(in.getValidTo()));
 			}				
 			DefaultListModel listModel = new DefaultListModel();
 			in = v.getInsurance();
