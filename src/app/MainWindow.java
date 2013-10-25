@@ -25,6 +25,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,6 +48,10 @@ public class MainWindow {
 	private Vehicle selectedVehicle;
 	private JFormattedTextField idSearchField;
 	private JTextField regSearchField;
+	private JMenuBar menuBar;
+	private JMenu fileMenu;
+	private JMenuItem logOutMenuItem;
+	private JMenuItem exitMenuItem;
 	
 	private ClaimsPane claimsPane;
 	private CustomerPane customerPane;
@@ -85,10 +92,6 @@ public class MainWindow {
 		scrollPane = new JScrollPane(table,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		addActionListeners();
-		
-		vList.addListSelectionListener(vl);
 		
 		// Load customers
 		DB db = DB.getInstance();
@@ -130,7 +133,21 @@ public class MainWindow {
 		// add panels
 		rootPane.add(leftPane, BorderLayout.WEST);
 		rootPane.add(rightPane, BorderLayout.CENTER);
-
+		
+		// add menu
+		menuBar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		logOutMenuItem = new JMenuItem("Log out");
+		exitMenuItem = new JMenuItem("Exit");
+		menuBar.add(fileMenu);
+		fileMenu.add(logOutMenuItem);
+		fileMenu.addSeparator();
+		fileMenu.add(exitMenuItem);
+		frame.setJMenuBar(menuBar);
+		
+		addActionListeners();
+		vList.addListSelectionListener(vl);
+		
 		// Prepare for display
 		frame.addWindowListener(new WindowListener() {
 			public void windowClosing(WindowEvent e) {
@@ -197,6 +214,29 @@ public class MainWindow {
 	}
 	
 	private void addActionListeners() {
+		
+		logOutMenuItem.addActionListener(
+				new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Session.getInstance().logOut();
+							MainWindow.this.frame.setVisible(false);;
+							MainWindow.this.frame.dispose();
+							new LoginWindow();
+						}
+				}
+		);
+		
+		exitMenuItem.addActionListener(
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Session.getInstance().logOut();
+						System.exit(0);
+					}
+				}
+		);
+		
 		// Actions
 		idSearchField.addActionListener( 
 			new ActionListener() {			
